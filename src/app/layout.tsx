@@ -6,8 +6,8 @@ import AuthProvider from '../context/AuthProvider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'True Feedback',
-  description: 'Real feedback from real people.',
+  title: 'NextApp',
+  description: 'Fullstack Next.js app with TypeScript, NextAuth.js and Zod',
 };
 
 interface RootLayoutProps {

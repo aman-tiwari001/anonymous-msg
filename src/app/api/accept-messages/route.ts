@@ -26,13 +26,13 @@ export async function POST(req: Request) {
 		user.isAcceptingMessages = acceptMessages;
 		await user.save();
 		return Response.json(
-			{ success: true, message: 'Accept messages toggled', result: user },
+			{ success: true, message: 'Accept messages toggled.', result: user },
 			{ status: 200 }
 		);
 	} catch (error) {
 		console.error('Error toggling accept messages.', error);
 		return Response.json(
-			{ success: false, message: 'Error toggling accept messages' },
+			{ success: false, message: 'Error toggling accept messages.' },
 			{ status: 500 }
 		);
 	}
@@ -61,7 +61,7 @@ export async function GET(req: Request) {
 			{ status: 200 }
 		);
 	} catch (error) {
-		console.error('Error getting accept messages status.', error);
+		console.error('Error getting accept messages status', error);
 		return Response.json(
 			{ success: false, message: 'Error getting accept messages status.' },
 			{ status: 500 }
