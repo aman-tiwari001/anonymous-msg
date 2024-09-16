@@ -112,9 +112,9 @@ export default function SignUpForm() {
 						Join <MessageCircleQuestionIcon size={50} /> MystiQ!
 					</h1>
 					<p className='mb-4 max-sm:text-[12px] flex items-center gap-1'>
-						Sign up to start your
+						Sign up to ask questions
 						<LockIcon className='max-sm:w-3' size={20} />
-						anonymous adventure
+						anonymously!
 					</p>
 				</div>
 
@@ -172,7 +172,7 @@ export default function SignUpForm() {
 						/>
 						<p className='text-red-500 text-md'>{errors.password?.message}</p>
 					</label>
-					<Button type='submit'>
+					<Button type='submit' disabled={isSubmitting}>
 						{isSubmitting ? <Loader2 className='animate-spin' /> : 'Sign Up'}
 					</Button>
 				</form>

@@ -30,6 +30,7 @@ export default function VerifyAccount() {
 	const router = useRouter();
 	const params = useParams<{ username: string }>();
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isSendingCode, setIsSendingCode] = useState(false);
 	const { toast } = useToast();
 	const form = useForm<z.infer<typeof verifySchema>>({
 		resolver: zodResolver(verifySchema),
@@ -38,6 +39,29 @@ export default function VerifyAccount() {
 		},
 	});
 
+	const resendCode = async () => {
+		try {
+			setIsSendingCode(true);
+			const res = await axios.post<ApiResponse>(`/api/resend-code`, {
+				username: params.username,
+			});
+			toast({
+				title: 'Verification code sent',
+				description: 'Check your email.',
+			});
+		} catch (error) {
+			const axiosError = error as AxiosError<ApiResponse>;
+			toast({
+				title: 'Failed to resend code',
+				description:
+					axiosError.response?.data.message ??
+					'An error occurred. Please try again.',
+				variant: 'destructive',
+			});
+		} finally {
+			setIsSendingCode(false);
+		}
+	};
 	const onSubmit = async (data: z.infer<typeof verifySchema>) => {
 		try {
 			setIsSubmitting(true);
@@ -81,6 +105,9 @@ export default function VerifyAccount() {
 							name='code'
 							render={({ field }) => (
 								<FormItem>
+									<FormDescription>
+										Please enter the verfication code sent to your email.
+									</FormDescription>
 									<FormControl>
 										<InputOTP maxLength={6} {...field}>
 											<InputOTPGroup>
@@ -93,14 +120,19 @@ export default function VerifyAccount() {
 											</InputOTPGroup>
 										</InputOTP>
 									</FormControl>
-									<FormDescription>
-										Please enter the verfication code sent to your email.
-									</FormDescription>
 									<FormMessage />
+									<p className='text-sm text-gray-500'>Valid for 10 mins.</p>
+									<p
+										onClick={resendCode}
+                    aria-disabled={isSendingCode}
+										className='text-blue-500 text-sm hover:text-blue-700'
+									>
+										{isSendingCode? "Sending..." : "Resend code"}
+									</p>
 								</FormItem>
 							)}
 						/>
-						<Button type='submit'>
+						<Button type='submit' disabled={isSubmitting}>
 							{isSubmitting ? <Loader2 className='animate-spin' /> : 'Submit'}
 						</Button>
 					</form>
