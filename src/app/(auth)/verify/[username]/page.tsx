@@ -124,10 +124,10 @@ export default function VerifyAccount() {
 									<p className='text-sm text-gray-500'>Valid for 10 mins.</p>
 									<p
 										onClick={resendCode}
-                    aria-disabled={isSendingCode}
+										aria-disabled={isSendingCode}
 										className='text-blue-500 text-sm hover:text-blue-700'
 									>
-										{isSendingCode? "Sending..." : "Resend code"}
+										{isSendingCode ? 'Sending...' : 'Resend code'}
 									</p>
 								</FormItem>
 							)}

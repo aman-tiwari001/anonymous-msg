@@ -6,31 +6,22 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDebounceValue } from 'usehooks-ts';
+import { useDebounceCallback } from 'usehooks-ts';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import axios, { AxiosError } from 'axios';
-import {
-	FileQuestionIcon,
-	Loader2,
-	LockIcon,
-	MailQuestionIcon,
-	MessageCircleQuestion,
-	MessageCircleQuestionIcon,
-	StretchVerticalIcon,
-} from 'lucide-react';
+import { Loader2, LockIcon, MessageCircleQuestionIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { signUpSchema } from '@/schemas/signUpSchema';
-import Image from 'next/image';
 
 export default function SignUpForm() {
 	const [username, setUsername] = useState('');
 	const [usernameMessage, setUsernameMessage] = useState('');
 	const [isCheckingUsername, setIsCheckingUsername] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [debouncedUsername, setDebouncedUsername] = useDebounceValue(
-		username,
-		300
+	const debounced = useDebounceCallback(
+		setUsername,
+		500
 	);
 
 	const router = useRouter();
@@ -51,12 +42,12 @@ export default function SignUpForm() {
 
 	useEffect(() => {
 		const checkUsernameUnique = async () => {
-			if (debouncedUsername) {
+			if (username) {
 				setIsCheckingUsername(true);
-				setUsernameMessage(''); // Reset message
+				setUsernameMessage('');
 				try {
 					const response = await axios.get<ApiResponse>(
-						`/api/validate-username?username=${debouncedUsername}`
+						`/api/validate-username?username=${username}`
 					);
 					setUsernameMessage(response.data.message);
 				} catch (error) {
@@ -70,7 +61,7 @@ export default function SignUpForm() {
 			}
 		};
 		checkUsernameUnique();
-	}, [debouncedUsername]);
+	}, [username]);
 
 	const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
 		setIsSubmitting(true);
@@ -105,13 +96,13 @@ export default function SignUpForm() {
 	};
 
 	return (
-		<div className='flex justify-center items-center min-h-screen text-black bg-pri'>
+		<div className='flex justify-center items-center min-h-screen text-black bg-black'>
 			<div className='max-sm:w-[90%] w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md'>
 				<div className='text-center'>
-					<h1 className='text-4xl text-primary font-extrabold tracking-tight lg:text-5xl mb-6 flex items-center gap-2'>
-						Join <MessageCircleQuestionIcon size={50} /> MystiQ!
+					<h1 className='text-4xl font-extrabold tracking-tight lg:text-5xl mb-6 max-sm:mb-2 flex items-center gap-2'>
+						Join <MessageCircleQuestionIcon size={50} /> Myst!Q
 					</h1>
-					<p className='mb-4 max-sm:text-[12px] flex items-center gap-1'>
+					<p className='mb-4 max-sm:mb-2 max-sm:text-[12px] flex items-center gap-1'>
 						Sign up to ask questions
 						<LockIcon className='max-sm:w-3' size={20} />
 						anonymously!
@@ -131,7 +122,7 @@ export default function SignUpForm() {
 							type='text'
 							id='username'
 							{...register('username', { required: 'Username is required' })}
-							onChange={(e) => setUsername(e.target.value)}
+							onChange={(e) => debounced(e.target.value)}
 						/>
 						{isCheckingUsername ? (
 							<Loader2 className='animate-spin mt-2' />

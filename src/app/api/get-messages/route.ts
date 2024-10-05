@@ -25,7 +25,7 @@ export async function GET(req: Request) {
 			{ $sort: { 'messages.createdAt': -1 } },
 			{ $group: { _id: '$_id', messages: { $push: '$messages' } } },
 		]);
-		if (!user || user.length === 0) {
+		if (!user) {
 			return Response.json(
 				{ success: false, message: 'User not found.' },
 				{ status: 404 }
